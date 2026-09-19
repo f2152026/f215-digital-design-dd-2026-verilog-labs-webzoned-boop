@@ -26,5 +26,28 @@ module rca64(
 );
 
   // TODO: your 64-bit ripple-carry structure goes here.
+// Carry signals
+    // c[0] = initial carry-in
+    // c[64] = final carry-out
+    wire [64:0] c;
 
+    // Connect external carry-in to the first carry
+    assign c[0] = cin;
+
+    // Instantiate 64 full adders
+    genvar i;
+    generate
+        for (i = 0; i < 64; i = i + 1) begin : gen_fa
+            FA_Gate FA (
+                .a(a[i]),
+                .b(b[i]),
+                .cin(c[i]),
+                .sum(sum[i]),
+                .cout(c[i+1])
+            );
+        end
+    endgenerate
+
+    // Final carry-out
+    assign cout = c[64];
 endmodule
